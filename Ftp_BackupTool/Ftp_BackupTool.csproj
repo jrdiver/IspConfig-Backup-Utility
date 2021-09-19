@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UserSecretsId>b16bbd57-eb46-4dc6-9267-a791e797c4e7</UserSecretsId>
+    <AssemblyName>Jrdiver's SFTP Backup Utility</AssemblyName>
+    <Authors>Jrdiver</Authors>
+    <Company>SharkByte Computers</Company>
+    <Copyright>2021 SharkByte Computers</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="SSH.NET" Version="2020.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackupFileManagement\BackupFileManagement.csproj" />
+    <ProjectReference Include="..\DatabaseMySql\DatabaseMySql.csproj" />
+    <ProjectReference Include="..\RegistryConnector\RegistryConnector.csproj" />
+    <ProjectReference Include="..\sftpObjects\sftpObjects.csproj" />
+    <ProjectReference Include="..\Sftp\Sftp.csproj" />
+    <ProjectReference Include="..\SharedMethods\SharedMethods.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

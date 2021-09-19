@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\sftpObjects\sftpObjects.csproj" />
+    <ProjectReference Include="..\SharedMethods\SharedMethods.csproj" />
+  </ItemGroup>
+
+</Project>
