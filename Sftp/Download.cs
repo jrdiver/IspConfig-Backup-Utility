@@ -38,6 +38,15 @@ namespace Sftp
             SqlPassword = sqlPassword;
             IspConfigDb db = new(host, SqlUsername, SqlPassword, SqlPort);
             definitions.AddRange(db.GetWebDefinitions());
+            definitions.AddRange(db.GetMailDefinitions());
+
+            definitions.Add(new()
+            {
+                DestinationFolderName = "ISPConfig",
+                SourceFolderName = "ispconfig_",
+                UseWildcard = true,
+                BackupType = "ISPConfig"
+            });
         }
 
         public void StartDownload()
@@ -66,36 +75,46 @@ namespace Sftp
             //foreach (SftpFile file in files.Where(file => file.Name is not ("." or "..")))
             Parallel.ForEach(files.Where(file => file.Name is not ("." or "..")), file =>
             {
+                string currentDestinationPath = destPath;
+
                 if (file.IsDirectory)
                 {
-                    SortDefinition definition = new ();
+                    SortDefinition definition = new();
 
+                    //Exact Match
                     if (definitions.Any(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase)))
                     {
                         definition = definitions.First(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
-                        destPath = Path.Combine(destPath, definition.DestinationFolderName);
-                        destPath = DestinationPathAddDate(destPath, file);
+                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.BackupType);
+                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                        currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
+                    }
+                    //Wildcard like the ISPConfig Folder
+                    else if (definitions.Any(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase) && x.UseWildcard))
+                    {
+                        definition = definitions.First(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
+                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                        currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
+                    }
+                    //if Somehow there's no Definition
+                    else
+                    {
+                        currentDestinationPath = Path.Combine(currentDestinationPath, file.Name);
                     }
 
-                    DownloadDirectory(sftpClient, file.FullName, destPath, definition.Files);
+                    DownloadDirectory(sftpClient, file.FullName, currentDestinationPath, definition.Files);
                 }
                 else
                 {
                     string destFilePath;
-                    string destFolderPath = destPath;
 
                     string fileNme = file.Name;
                     if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
                     {
-                        fileNme = fileNme.Substring(7);
+                        fileNme = fileNme[7..];
                     }
 
-                    if (fileNme.Contains("roundcube", StringComparison.OrdinalIgnoreCase))
-                    {
-                        Debug.WriteLine("Found");
-                    }
-
-                    SortFileDefinition? definition = fileDefinitions.FirstOrDefault(x => fileNme.Split('_')[0].Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
+                    SortFileDefinition? definition = fileDefinitions.FirstOrDefault(x => fileNme.Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
                     if (definition == null && fileDefinitions.Count > 0)
                     {
                         string[] fileNameSplit = fileNme.Split('_');
@@ -105,17 +124,17 @@ namespace Sftp
 
                     if (definition != null)
                     {
-                        destFolderPath = Path.Combine(destPath, definition.DestinationFileName);
+                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFileName);
 
-                        destFilePath = DestinationPathAddDate(destFolderPath, file);
+                        destFilePath = DestinationPathAddDate(currentDestinationPath, file);
                         destFilePath += definition.FileExtension;
                     }
                     else
                     {
-                        destFilePath = Path.Combine(destFolderPath, file.Name);
+                        destFilePath = Path.Combine(currentDestinationPath, file.Name);
                     }
 
-                    Directory.CreateDirectory(destFolderPath);
+                    Directory.CreateDirectory(currentDestinationPath);
 
                     if (File.Exists(destFilePath) && new FileInfo(destFilePath).Length == file.Length) return;
 
@@ -124,6 +143,7 @@ namespace Sftp
 
                 }
             });
+            //}
         }
 
         public static string DestinationPathAddDate(string destFilePath, SftpFile file)
@@ -143,7 +163,7 @@ namespace Sftp
             string fileNme = file.Name;
             if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
             {
-                fileNme = fileNme.Substring(7);
+                fileNme = fileNme[7..];
             }
 
             string[] names = fileNme.Split('_').Select(x => x.Split('.')[0]).Reverse().ToArray();

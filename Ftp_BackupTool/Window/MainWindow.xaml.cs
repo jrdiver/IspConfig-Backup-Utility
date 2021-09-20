@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Sftp;
@@ -11,15 +12,24 @@ namespace Ftp_BackupTool.Window
     public partial class MainWindow : System.Windows.Window
     {
         private const string KeyLocation = "JrdiverSftpBackup";
+        private bool autoRun;
 
         public MainWindow()
         {
             InitializeComponent();
             LoadSettings();
-
         }
 
-        public async void RunTasks()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CheckBoxAutoRun.IsChecked == true)
+            {
+                RunTasks();
+                autoRun = true;
+            }
+        }
+
+        public async void RunTasks(bool runButton = false)
         {
             ProgressBar1.IsIndeterminate = true;
 
@@ -28,10 +38,17 @@ namespace Ftp_BackupTool.Window
                 return;
             }
 
+            if (autoRun && !runButton)
+            {
+                Thread.Sleep(5000);
+                if(!autoRun)
+                    return;
+            }
+
             int.TryParse(TextSftpPort.Text, out int ftpPort);
             int.TryParse(TextMySqlPort.Text, out int sqlPort);
 
-            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text, 
+            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text,
                 TextMySqlUserName.Text, TextMySqlPassword.Password, ftpPort, sqlPort);
             BackupScheme backup = new(TextLocalDirectory.Text);
 
@@ -47,7 +64,7 @@ namespace Ftp_BackupTool.Window
 
         private void ButtonRun_Click(object sender, RoutedEventArgs e)
         {
-            RunTasks();
+            RunTasks(true);
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -155,10 +172,12 @@ namespace Ftp_BackupTool.Window
                 return false;
             }
 
-
-
             return true;
         }
 
+        private void CheckBoxAutoRun_Checked(object sender, RoutedEventArgs e)
+        {
+            autoRun = CheckBoxAutoRun.IsChecked == true;
+        }
     }
 }

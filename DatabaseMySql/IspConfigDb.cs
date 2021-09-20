@@ -127,12 +127,15 @@ namespace DatabaseMySql
                 {
                     SortDefinition definition = new()
                     {
-                        DomainName = row["domain"].ToString(), 
-                        User = row["system_user"].ToString()
+                        DomainName = row["domain"].ToString(),
+                        DestinationFolderName = row["domain"].ToString(),
+                        SourceFolderName = row["system_user"].ToString(),
+                        User = row["system_user"].ToString(),
+                        BackupType = "Website"
                     };
                     definitions.Add(definition);
                 }
-                
+
                 SortDefinition currentDefinition = definitions.FirstOrDefault(x => x.DomainName == row["domain"].ToString());
 
                 int.TryParse(row["filesize"].ToString(), out int fileSize);
@@ -147,8 +150,66 @@ namespace DatabaseMySql
                 };
                 file.LoadDateFromEpoch(seconds);
 
-
+                string[] fileName = file.SourceFileName.Split('.');
+                if(fileName.Length>2)
+                    file.FileExtension = fileName[^2] + "." + fileName[^1];
+                else if (fileName.Length > 1)
+                    file.FileExtension = fileName[^1];
                 currentDefinition?.Files.Add(file);
+            }
+
+            return definitions;
+        }
+
+        public List<SortDefinition> GetMailDefinitions()
+        {
+            DataTable results = BasicQuery("SELECT filename, email, tstamp, filesize, parent_domain_id, mail_user.mailuser_id FROM dbispconfig.mail_user " +
+                                           "right join mail_backup on mail_user.mailuser_id = mail_backup.mailuser_id");
+
+            List<SortDefinition> definitions = new();
+
+            foreach (DataRow row in results.Rows)
+            {
+                string[] emailSplit = row["email"].ToString().Split("@");
+                if (emailSplit.Length > 1)
+                {
+                    //Check if the site exits in the definitions
+                    if (!definitions.Exists(x => x.DomainName == emailSplit[1]))
+                    {
+                        SortDefinition definition = new()
+                        {
+                            DomainName = emailSplit[1],
+                            DestinationFolderName = emailSplit[1],
+                            SourceFolderName = "mail" + row["parent_domain_id"],
+                            User = row["parent_domain_id"].ToString(),
+                            BackupType = "Email"
+                        };
+                        definitions.Add(definition);
+                    }
+
+                    SortDefinition currentDefinition = definitions.FirstOrDefault(x => x.DomainName == emailSplit[1]);
+
+                    int.TryParse(row["filesize"].ToString(), out int fileSize);
+                    long.TryParse(row["tstamp"].ToString(), out long seconds);
+
+                    SortFileDefinition file = new()
+                    {
+                        SourceFileName = row["filename"].ToString(),
+                        BackupType = "tar.gz",
+                        Format = "Email",
+                        DestinationFileName = emailSplit[0],
+                        ReportedSize = fileSize
+                    };
+                    file.LoadDateFromEpoch(seconds);
+
+                    string[] fileName = file.SourceFileName.Split('.');
+                    if (fileName.Length > 2)
+                        file.FileExtension = fileName[^2] + "." + fileName[^1];
+                    else if (fileName.Length > 1)
+                        file.FileExtension = fileName[^1];
+
+                    currentDefinition?.Files.Add(file);
+                }
             }
 
             return definitions;

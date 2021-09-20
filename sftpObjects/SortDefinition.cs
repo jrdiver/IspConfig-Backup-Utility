@@ -8,6 +8,8 @@ namespace sftpObjects
         public string DestinationFolderName = string.Empty;
         public string DomainName = string.Empty;
         public string User = string.Empty;
+        public string BackupType = string.Empty;
+        public bool UseWildcard = false;
         public List<SortFileDefinition> Files = new();
     }
 }
