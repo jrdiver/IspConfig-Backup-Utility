@@ -29,20 +29,13 @@ namespace Ftp_BackupTool.Window
             }
         }
 
-        public async void RunTasks(bool runButton = false)
+        public async void RunTasks()
         {
             ProgressBar1.IsIndeterminate = true;
 
             if (!ValidateSettings())
             {
                 return;
-            }
-
-            if (autoRun && !runButton)
-            {
-                Thread.Sleep(5000);
-                if(!autoRun)
-                    return;
             }
 
             int.TryParse(TextSftpPort.Text, out int ftpPort);
@@ -64,7 +57,7 @@ namespace Ftp_BackupTool.Window
 
         private void ButtonRun_Click(object sender, RoutedEventArgs e)
         {
-            RunTasks(true);
+            RunTasks();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)

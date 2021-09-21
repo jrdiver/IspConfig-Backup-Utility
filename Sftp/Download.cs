@@ -126,8 +126,12 @@ namespace Sftp
                     {
                         currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFileName);
 
+                        if (definition.BackupType.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
+                            currentDestinationPath = Path.Combine(currentDestinationPath, "MySQL");
+
+
                         destFilePath = DestinationPathAddDate(currentDestinationPath, file);
-                        destFilePath += definition.FileExtension;
+                        destFilePath += "." + definition.FileExtension;
                     }
                     else
                     {
