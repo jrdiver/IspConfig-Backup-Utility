@@ -52,7 +52,9 @@ namespace Ftp_BackupTool.Window
             await currentTask;
 
             ProgressBar1.IsIndeterminate = false;
-            Application.Current.Shutdown();
+
+            if(autoRun)
+                Application.Current.Shutdown();
         }
 
         private void ButtonRun_Click(object sender, RoutedEventArgs e)
