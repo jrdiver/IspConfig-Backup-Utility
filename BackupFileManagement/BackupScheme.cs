@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using SharedMethods;
 
 namespace BackupFileManagement
@@ -44,21 +46,17 @@ namespace BackupFileManagement
         private void CleanFiles(string path)
         {
             string[] files = Directory.GetFiles(path);
-            List<FileCleanupInfo> fileList = new();
             List<FileCleanupInfo> deleteList = new();
 
-            if (path.Contains("EmptyFolders"))
-            {
-                Debug.WriteLine("pause");
-            }
-            foreach (string file in files)
+            ConcurrentBag<FileCleanupInfo> concurrentFileList = new();
+            Parallel.ForEach(files, file =>
             {
                 DateTime.TryParseExact(Path.GetFileNameWithoutExtension(file).Split(".")[0], "yyyy-M-d_HH-mm", new CultureInfo("en-US"), DateTimeStyles.None, out DateTime date);
                 FileCleanupInfo currentFile = new() { FilePath = file, BackupTime = date };
-                fileList.Add(currentFile);
-            }
+                concurrentFileList.Add(currentFile);
+            });
 
-            fileList = fileList.Where(x => x.BackupTime != DateTime.MinValue).OrderBy(x => x.BackupTime).ToList();  //Ignore files that didn't parse right
+            List<FileCleanupInfo> fileList = concurrentFileList.Where(x => x.BackupTime != DateTime.MinValue).OrderBy(x => x.BackupTime).ToList();
             if (fileList.Count < 2) return;
 
             //duplicates for single day
@@ -134,10 +132,10 @@ namespace BackupFileManagement
 
             if (deleteList.Count <= 0) return;
 
-            foreach (FileCleanupInfo file in deleteList.Where(file => File.Exists(file.FilePath)))
-            {
-                File.Delete(file.FilePath);
-            }
+            Parallel.ForEach(deleteList.Where(file => File.Exists(file.FilePath)), file =>
+           {
+               File.Delete(file.FilePath);
+           });
         }
     }
 }

@@ -76,75 +76,92 @@ namespace Sftp
             Parallel.ForEach(files.Where(file => file.Name is not ("." or "..")), file =>
             {
                 string currentDestinationPath = destPath;
-
-                if (file.IsDirectory)
+                try
                 {
-                    SortDefinition definition = new();
+                    if (file.IsDirectory)
+                    {
+                        SortDefinition definition = new();
 
-                    //Exact Match
-                    if (definitions.Any(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        definition = definitions.First(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
-                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.BackupType);
-                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
-                        currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
+                        //Exact Match
+                        if (definitions.Any(x =>
+                            file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            definition = definitions.First(x =>
+                                file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
+                            currentDestinationPath = Path.Combine(currentDestinationPath, definition.BackupType);
+                            currentDestinationPath =
+                                Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                            currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
+                        }
+                        //Wildcard like the ISPConfig Folder
+                        else if (definitions.Any(x =>
+                            file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase) &&
+                            x.UseWildcard))
+                        {
+                            definition = definitions.First(x =>
+                                file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
+                            currentDestinationPath =
+                                Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                            currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
+                        }
+                        //if Somehow there's no Definition
+                        else
+                        {
+                            currentDestinationPath = Path.Combine(currentDestinationPath, file.Name);
+                        }
+
+                        DownloadDirectory(sftpClient, file.FullName, currentDestinationPath, definition.Files);
                     }
-                    //Wildcard like the ISPConfig Folder
-                    else if (definitions.Any(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase) && x.UseWildcard))
-                    {
-                        definition = definitions.First(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
-                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
-                        currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
-                    }
-                    //if Somehow there's no Definition
                     else
                     {
-                        currentDestinationPath = Path.Combine(currentDestinationPath, file.Name);
-                    }
+                        string destFilePath;
 
-                    DownloadDirectory(sftpClient, file.FullName, currentDestinationPath, definition.Files);
+                        string fileNme = file.Name;
+                        if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
+                        {
+                            fileNme = fileNme[7..];
+                        }
+
+                        SortFileDefinition? definition = fileDefinitions.FirstOrDefault(x =>
+                            fileNme.Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
+                        if (definition == null && fileDefinitions.Count > 0)
+                        {
+                            string[] fileNameSplit = fileNme.Split('_');
+                            if (fileNameSplit.Length > 1)
+                                definition = fileDefinitions.FirstOrDefault(x =>
+                                    (fileNameSplit[0] + "_" + fileNameSplit[1]).Equals(x.SourceFileName,
+                                        StringComparison.OrdinalIgnoreCase));
+                        }
+
+                        if (definition != null)
+                        {
+                            currentDestinationPath =
+                                Path.Combine(currentDestinationPath, definition.DestinationFileName);
+
+                            if (definition.BackupType.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
+                                currentDestinationPath = Path.Combine(currentDestinationPath, "MySQL");
+
+
+                            destFilePath = DestinationPathAddDate(currentDestinationPath, file);
+                            destFilePath += "." + definition.FileExtension;
+                        }
+                        else
+                        {
+                            destFilePath = Path.Combine(currentDestinationPath, file.Name);
+                        }
+
+                        Directory.CreateDirectory(currentDestinationPath);
+
+                        if (File.Exists(destFilePath) && new FileInfo(destFilePath).Length == file.Length) return;
+
+                        using Stream fileStream = File.Create(destFilePath);
+                        sftpClient.DownloadFile(file.FullName, fileStream);
+
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    string destFilePath;
-
-                    string fileNme = file.Name;
-                    if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
-                    {
-                        fileNme = fileNme[7..];
-                    }
-
-                    SortFileDefinition? definition = fileDefinitions.FirstOrDefault(x => fileNme.Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
-                    if (definition == null && fileDefinitions.Count > 0)
-                    {
-                        string[] fileNameSplit = fileNme.Split('_');
-                        if (fileNameSplit.Length > 1)
-                            definition = fileDefinitions.FirstOrDefault(x => (fileNameSplit[0] + "_" + fileNameSplit[1]).Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
-                    }
-
-                    if (definition != null)
-                    {
-                        currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFileName);
-
-                        if (definition.BackupType.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
-                            currentDestinationPath = Path.Combine(currentDestinationPath, "MySQL");
-
-
-                        destFilePath = DestinationPathAddDate(currentDestinationPath, file);
-                        destFilePath += "." + definition.FileExtension;
-                    }
-                    else
-                    {
-                        destFilePath = Path.Combine(currentDestinationPath, file.Name);
-                    }
-
-                    Directory.CreateDirectory(currentDestinationPath);
-
-                    if (File.Exists(destFilePath) && new FileInfo(destFilePath).Length == file.Length) return;
-
-                    using Stream fileStream = File.Create(destFilePath);
-                    sftpClient.DownloadFile(file.FullName, fileStream);
-
+                    Console.WriteLine(ex);
                 }
             });
             //}
