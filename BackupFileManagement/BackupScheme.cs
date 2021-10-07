@@ -38,14 +38,43 @@ namespace BackupFileManagement
                 CleanFiles(path);
                 foreach (string folder in folders)
                 {
+                    if (Path.GetFileName(folder)?.Equals("IspConfig", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        CleanIspConfigFolder(folder);
+                    }
                     ProcessDirectory(folder);
                 }
             }
         }
 
+        private void CleanIspConfigFolder(string path)
+        {
+            string[] files = Directory.GetDirectories(path);
+            List<FileCleanupInfo> deleteList = CalculateDeletes(files);
+
+            if (deleteList.Count <= 0) return;
+
+            Parallel.ForEach(deleteList.Where(file => Directory.Exists(file.FilePath)), file =>
+            {
+                Directory.Delete(file.FilePath,  true);
+            });
+        }
+
         private void CleanFiles(string path)
         {
             string[] files = Directory.GetFiles(path);
+            List<FileCleanupInfo> deleteList = CalculateDeletes(files);
+
+            if (deleteList.Count <= 0) return;
+
+            Parallel.ForEach(deleteList.Where(file => File.Exists(file.FilePath)), file =>
+           {
+               File.Delete(file.FilePath);
+           });
+        }
+
+        private List<FileCleanupInfo> CalculateDeletes(string[] files)
+        {
             List<FileCleanupInfo> deleteList = new();
 
             ConcurrentBag<FileCleanupInfo> concurrentFileList = new();
@@ -57,7 +86,7 @@ namespace BackupFileManagement
             });
 
             List<FileCleanupInfo> fileList = concurrentFileList.Where(x => x.BackupTime != DateTime.MinValue).OrderBy(x => x.BackupTime).ToList();
-            if (fileList.Count < 2) return;
+            if (fileList.Count < 2) return deleteList;
 
             //duplicates for single day
             List<DateTime> dateList = fileList.GroupBy(x => x.BackupTime.Date).Where(x => x.Count() > 1).Select(x => x.Key).ToList();
@@ -130,12 +159,7 @@ namespace BackupFileManagement
                 }
             }
 
-            if (deleteList.Count <= 0) return;
-
-            Parallel.ForEach(deleteList.Where(file => File.Exists(file.FilePath)), file =>
-           {
-               File.Delete(file.FilePath);
-           });
+            return deleteList;
         }
     }
 }
