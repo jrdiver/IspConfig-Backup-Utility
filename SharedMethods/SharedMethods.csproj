@@ -2,6 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <PackageId>SharkByte.IspConfigBackup.Shared</PackageId>
+    <Authors>Jrdiver</Authors>
+    <Company>SharkByte Computers</Company>
+    <Version>1.0.1</Version>
+    <Copyright>2021 SharkByte Computers</Copyright>
+    <PackageProjectUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Ftp_BackupTool\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
