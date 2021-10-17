@@ -38,7 +38,7 @@ namespace BackupFileManagement
                 CleanFiles(path);
                 foreach (string folder in folders)
                 {
-                    if (Path.GetFileName(folder)?.Equals("IspConfig", StringComparison.OrdinalIgnoreCase) == true)
+                    if (Path.GetFileName(folder).Equals("IspConfig", StringComparison.OrdinalIgnoreCase))
                     {
                         CleanIspConfigFolder(folder);
                     }
