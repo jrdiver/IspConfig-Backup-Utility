@@ -184,15 +184,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Jrdiver's IspConfig Backup Utility"
-        "ProductCode" = "8:{F24731B6-DDD7-4233-9764-D2F5E2EC63C5}"
-        "PackageCode" = "8:{C821F648-9DF8-411A-8A2E-BFD0EF455F5F}"
+        "ProductCode" = "8:{B7EFA7F7-86E4-4747-BF79-4277923A0343}"
+        "PackageCode" = "8:{17D0F1D2-1CBE-4861-82BF-26A3018539E4}"
         "UpgradeCode" = "8:{6DE6A82C-92F0-40B5-8B75-19B732055A15}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.0"
+        "ProductVersion" = "8:1.1.1"
         "Manufacturer" = "8:SharkByte Computers"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -748,7 +748,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C5CC51F8E43C46418B2304A8A1DDAD92"
             {
-            "SourcePath" = "8:..\\Ftp_BackupTool\\obj\\Debug\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\Ftp_BackupTool\\obj\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_76FF629C2AD04520B34CE9CCB7631695"
@@ -776,7 +776,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F13213FBFE8E415C9771F91779F481B1"
             {
-            "SourcePath" = "8:..\\Ftp_BackupTool\\obj\\Debug\\net6.0-windows\\Jrdiver's SFTP Backup Utility.dll"
+            "SourcePath" = "8:..\\Ftp_BackupTool\\obj\\Release\\net6.0-windows\\Jrdiver's SFTP Backup Utility.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_76FF629C2AD04520B34CE9CCB7631695"
