@@ -24,7 +24,6 @@ namespace Sftp
         public string SqlPassword;
         private List<SortDefinition> definitions = new();
 
-
         public Download(string host, string ftpUsername, string ftpPassword, string serverFolder, string localFolder, string sqlUsername, string sqlPassword, int ftpPort = 22, int sqlPort = 3306)
         {
             Host = host;
@@ -83,32 +82,23 @@ namespace Sftp
                         SortDefinition definition = new();
 
                         //Exact Match
-                        if (definitions.Any(x =>
-                            file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase)))
+                        if (definitions.Any(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase)))
                         {
-                            definition = definitions.First(x =>
-                                file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
+                            definition = definitions.First(x => file.Name.Equals(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
                             currentDestinationPath = Path.Combine(currentDestinationPath, definition.BackupType);
-                            currentDestinationPath =
-                                Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                            currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
                             currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
                         }
                         //Wildcard like the ISPConfig Folder
-                        else if (definitions.Any(x =>
-                            file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase) &&
-                            x.UseWildcard))
+                        else if (definitions.Any(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase) && x.UseWildcard))
                         {
-                            definition = definitions.First(x =>
-                                file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
-                            currentDestinationPath =
-                                Path.Combine(currentDestinationPath, definition.DestinationFolderName);
+                            definition = definitions.First(x => file.Name.StartsWith(x.SourceFolderName, StringComparison.OrdinalIgnoreCase));
+                            currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFolderName);
                             currentDestinationPath = DestinationPathAddDate(currentDestinationPath, file);
                         }
                         //if Somehow there's no Definition
                         else
-                        {
                             currentDestinationPath = Path.Combine(currentDestinationPath, file.Name);
-                        }
 
                         DownloadDirectory(sftpClient, file.FullName, currentDestinationPath, definition.Files);
                     }
@@ -118,9 +108,7 @@ namespace Sftp
 
                         string fileNme = file.Name;
                         if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
-                        {
                             fileNme = fileNme[7..];
-                        }
 
                         SortFileDefinition? definition = fileDefinitions.FirstOrDefault(x =>
                             fileNme.Equals(x.SourceFileName, StringComparison.OrdinalIgnoreCase));
@@ -135,28 +123,24 @@ namespace Sftp
 
                         if (definition != null)
                         {
-                            currentDestinationPath =
-                                Path.Combine(currentDestinationPath, definition.DestinationFileName);
+                            currentDestinationPath = Path.Combine(currentDestinationPath, definition.DestinationFileName);
 
                             if (definition.BackupType.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
                                 currentDestinationPath = Path.Combine(currentDestinationPath, "MySQL");
-
 
                             destFilePath = DestinationPathAddDate(currentDestinationPath, file);
                             destFilePath += "." + definition.FileExtension;
                         }
                         else
-                        {
                             destFilePath = Path.Combine(currentDestinationPath, file.Name);
-                        }
 
                         Directory.CreateDirectory(currentDestinationPath);
 
                         if (File.Exists(destFilePath) && new FileInfo(destFilePath).Length == file.Length) return;
-
+                        Debug.WriteLine("Starting Downloading " + file.Name);
                         using Stream fileStream = File.Create(destFilePath);
                         sftpClient.DownloadFile(file.FullName, fileStream);
-
+                        Debug.WriteLine("Finished Downloading " + file.Name);
                     }
                 }
                 catch (Exception ex)
@@ -164,7 +148,6 @@ namespace Sftp
                     Console.WriteLine(ex);
                 }
             });
-            //}
         }
 
         public static string DestinationPathAddDate(string destFilePath, SftpFile file)
@@ -172,9 +155,7 @@ namespace Sftp
             DateTime time = SeparateDateTime(file);
 
             if (time > DateTime.MinValue)
-            {
                 destFilePath = Path.Combine(destFilePath, time.ToString("yyyy-MM-dd_HH-mm"));
-            }
 
             return destFilePath;
         }
@@ -183,17 +164,13 @@ namespace Sftp
         {
             string fileNme = file.Name;
             if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
-            {
                 fileNme = fileNme[7..];
-            }
 
             string[] names = fileNme.Split('_').Select(x => x.Split('.')[0]).Reverse().ToArray();
 
             DateTime time = DateTime.MinValue;
             if (names.Length > 2)
-            {
                 DateTime.TryParse(names[1] + " " + names[0].Replace('-', ':'), out time);
-            }
 
             return time;
         }

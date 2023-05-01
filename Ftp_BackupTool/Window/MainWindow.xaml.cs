@@ -41,8 +41,7 @@ namespace Ftp_BackupTool.Window
             int.TryParse(TextSftpPort.Text, out int ftpPort);
             int.TryParse(TextMySqlPort.Text, out int sqlPort);
 
-            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text,
-                TextMySqlUserName.Text, TextMySqlPassword.Password, ftpPort, sqlPort);
+            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text, TextMySqlUserName.Text, TextMySqlPassword.Password, ftpPort, sqlPort);
             BackupScheme backup = new(TextLocalDirectory.Text);
 
             Task currentTask = Task.Run(download.StartDownload);
@@ -53,7 +52,7 @@ namespace Ftp_BackupTool.Window
 
             ProgressBar1.IsIndeterminate = false;
 
-            if(autoRun)
+            if (autoRun)
                 Application.Current.Shutdown();
         }
 
