@@ -39,9 +39,7 @@ namespace BackupFileManagement
                 foreach (string folder in folders)
                 {
                     if (Path.GetFileName(folder).Equals("IspConfig", StringComparison.OrdinalIgnoreCase))
-                    {
                         CleanIspConfigFolder(folder);
-                    }
                     ProcessDirectory(folder);
                 }
             }
@@ -56,7 +54,7 @@ namespace BackupFileManagement
 
             Parallel.ForEach(deleteList.Where(file => Directory.Exists(file.FilePath)), file =>
             {
-                Directory.Delete(file.FilePath,  true);
+                Directory.Delete(file.FilePath, true);
             });
         }
 
@@ -68,9 +66,9 @@ namespace BackupFileManagement
             if (deleteList.Count <= 0) return;
 
             Parallel.ForEach(deleteList.Where(file => File.Exists(file.FilePath)), file =>
-           {
-               File.Delete(file.FilePath);
-           });
+            {
+                File.Delete(file.FilePath);
+            });
         }
 
         private List<FileCleanupInfo> CalculateDeletes(string[] files)
