@@ -1,7 +1,6 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using System.Text.Json;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using StringEncrypter;
 
 namespace RegistryConnector
@@ -15,15 +14,13 @@ namespace RegistryConnector
             try
             {
                 if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(KeyLocation))
-                {
                     return false;
-                }
 
                 EncryptedString encryptedValue = EncodeDecode.Encrypt(value, DataProtectionScope.CurrentUser);
 
                 RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\" + KeyLocation);
 
-                key.SetValue(name, JsonConvert.SerializeObject(encryptedValue));
+                key.SetValue(name, JsonSerializer.Serialize(encryptedValue));
                 key.Close();
                 return true;
             }
@@ -37,24 +34,21 @@ namespace RegistryConnector
         public string GetUserValue(string name)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(KeyLocation))
-            {
                 return string.Empty;
-            }
             try
             {
                 RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\" + KeyLocation);
                 if (key == null)
-                {
                     return string.Empty;
-                }
 
                 string? value = key.GetValue(name)?.ToString();
                 key.Close();
 
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    EncryptedString encryptedValue = JsonConvert.DeserializeObject<EncryptedString>(value);
-                    if (encryptedValue != null) return EncodeDecode.Decrypt(encryptedValue);
+                    EncryptedString? encryptedValue = JsonSerializer.Deserialize<EncryptedString>(value);
+                    if (encryptedValue != null)
+                        return EncodeDecode.Decrypt(encryptedValue);
                 }
             }
             catch (Exception e)
@@ -69,15 +63,13 @@ namespace RegistryConnector
             try
             {
                 if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(KeyLocation))
-                {
                     return false;
-                }
 
                 EncryptedString encryptedValue = EncodeDecode.Encrypt(value, DataProtectionScope.LocalMachine);
 
                 RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\" + KeyLocation);
 
-                key.SetValue(name, JsonConvert.SerializeObject(encryptedValue));
+                key.SetValue(name, JsonSerializer.Serialize(encryptedValue));
                 key.Close();
                 return true;
             }
@@ -91,25 +83,22 @@ namespace RegistryConnector
         public string GetSystemValue(string name)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(KeyLocation))
-            {
                 return string.Empty;
-            }
 
             try
             {
                 RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\" + KeyLocation);
                 if (key == null)
-                {
                     return string.Empty;
-                }
 
                 string? value = key.GetValue(name)?.ToString();
                 key.Close();
 
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    EncryptedString encryptedValue = JsonConvert.DeserializeObject<EncryptedString>(value);
-                    if (encryptedValue != null) return EncodeDecode.Decrypt(encryptedValue);
+                    EncryptedString? encryptedValue = JsonSerializer.Deserialize<EncryptedString>(value);
+                    if (encryptedValue != null)
+                        return EncodeDecode.Decrypt(encryptedValue);
                 }
             }
             catch (Exception e)

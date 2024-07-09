@@ -4,8 +4,8 @@ namespace StringEncrypter
 {
     public class EncryptedString
     {
-        public byte[]? Entropy;
-        public byte[]? Encrypted;
-        public DataProtectionScope Scope = DataProtectionScope.LocalMachine;
+        public byte[]? Entropy { get; set; }
+        public byte[]? Encrypted { get; set; }
+        public DataProtectionScope Scope { get; set; } = DataProtectionScope.LocalMachine;
     }
 }

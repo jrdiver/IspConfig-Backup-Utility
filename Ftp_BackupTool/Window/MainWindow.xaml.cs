@@ -22,27 +22,22 @@ namespace Ftp_BackupTool.Window
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (CheckBoxAutoRun.IsChecked == true)
-            {
-                RunTasks();
-                autoRun = true;
-            }
+            if (CheckBoxAutoRun.IsChecked != true) return;
+
+            RunTasks();
+            autoRun = true;
         }
 
         public async void RunTasks()
         {
             ProgressBar1.IsIndeterminate = true;
 
-            if (!ValidateSettings())
-            {
-                return;
-            }
+            if (!ValidateSettings()) return;
 
             int.TryParse(TextSftpPort.Text, out int ftpPort);
             int.TryParse(TextMySqlPort.Text, out int sqlPort);
 
-            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text,
-                TextMySqlUserName.Text, TextMySqlPassword.Password, ftpPort, sqlPort);
+            Download download = new(TextHostName.Text, TextSftpUserName.Text, TextSftpPassword.Password, TextRemoteDirectory.Text, TextLocalDirectory.Text, TextMySqlUserName.Text, TextMySqlPassword.Password, ftpPort, sqlPort,TextEmailApiKey.Text);
             BackupScheme backup = new(TextLocalDirectory.Text);
 
             Task currentTask = Task.Run(download.StartDownload);
@@ -53,24 +48,15 @@ namespace Ftp_BackupTool.Window
 
             ProgressBar1.IsIndeterminate = false;
 
-            if(autoRun)
+            if (autoRun)
                 Application.Current.Shutdown();
         }
 
-        private void ButtonRun_Click(object sender, RoutedEventArgs e)
-        {
-            RunTasks();
-        }
+        private void ButtonRun_Click(object sender, RoutedEventArgs e) => RunTasks();
 
-        private void ButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            SaveSettings();
-        }
+        private void ButtonSave_Click(object sender, RoutedEventArgs e) => SaveSettings();
 
-        private void CloseRun_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+        private void CloseRun_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
         private void SaveSettings()
         {
@@ -90,6 +76,7 @@ namespace Ftp_BackupTool.Window
             settings.AddUserValue("MySqlPort", TextMySqlPort.Text);
             settings.AddUserValue("RemoteDirectory", TextRemoteDirectory.Text);
             settings.AddUserValue("LocalDirectory", TextLocalDirectory.Text);
+            settings.AddUserValue("EmailApiKey", TextEmailApiKey.Text);
             if (CheckBoxAutoRun != null) settings.AddUserValue("AutoRun", CheckBoxAutoRun.IsChecked.ToString());
         }
 
@@ -106,6 +93,7 @@ namespace Ftp_BackupTool.Window
             TextMySqlPort.Text = settings.GetUserValue("MySqlPort");
             TextRemoteDirectory.Text = settings.GetUserValue("RemoteDirectory");
             TextLocalDirectory.Text = settings.GetUserValue("LocalDirectory");
+            TextEmailApiKey.Text = settings.GetUserValue("EmailApiKey");
             bool.TryParse(settings.GetUserValue("AutoRun"), out bool autoRun);
             CheckBoxAutoRun.IsChecked = autoRun;
         }
@@ -170,9 +158,6 @@ namespace Ftp_BackupTool.Window
             return true;
         }
 
-        private void CheckBoxAutoRun_Checked(object sender, RoutedEventArgs e)
-        {
-            autoRun = CheckBoxAutoRun.IsChecked == true;
-        }
+        private void CheckBoxAutoRun_Checked(object sender, RoutedEventArgs e) => autoRun = CheckBoxAutoRun.IsChecked == true;
     }
 }

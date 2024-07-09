@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DatabaseMySql;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
+using SendgridConnector;
 using sftpObjects;
 
 namespace Sftp
@@ -22,11 +23,20 @@ namespace Sftp
         public int SqlPort;
         public string SqlUsername;
         public string SqlPassword;
-        private List<SortDefinition> definitions = new();
+        public string ApiKey;
+        public string FromEmail = string.Empty;
+        public string FromName = string.Empty;
+        public string ToEmail = string.Empty;
+        public string ToName = string.Empty;
+        public string Message = string.Empty;
+
+        private readonly List<SortDefinition> definitions = new();
 
 
-        public Download(string host, string ftpUsername, string ftpPassword, string serverFolder, string localFolder, string sqlUsername, string sqlPassword, int ftpPort = 22, int sqlPort = 3306)
+        public Download(string host, string ftpUsername, string ftpPassword, string serverFolder, string localFolder, string sqlUsername, string sqlPassword, int ftpPort = 22, int sqlPort = 3306, string apiKey="")
         {
+            //SendError();
+
             Host = host;
             FtpPort = ftpPort;
             FtpUsername = ftpUsername;
@@ -36,6 +46,7 @@ namespace Sftp
             SqlPort = sqlPort;
             SqlUsername = sqlUsername;
             SqlPassword = sqlPassword;
+            ApiKey = apiKey;
             IspConfigDb db = new(host, SqlUsername, SqlPassword, SqlPort);
             definitions.AddRange(db.GetWebDefinitions());
             definitions.AddRange(db.GetMailDefinitions());
@@ -51,6 +62,13 @@ namespace Sftp
 
         public void StartDownload()
         {
+            if (definitions.Count(x => !x.DestinationFolderName.ToUpper().Contains("ISPCONFIG")) == 0)
+            {
+                Debug.WriteLine("No Definitions Found");
+                SendError("No SQL Domain Name Definitions Found", "No SQL Domain Name Definitions Found on " + Host);
+                return;
+            }
+
             try
             {
                 using SftpClient sftp = new(Host, FtpPort, FtpUsername, FtpPassword);
@@ -70,7 +88,7 @@ namespace Sftp
         {
             fileDefinitions ??= new List<SortFileDefinition>();
 
-            List<SftpFile> files = sftpClient.ListDirectory(sourceRemotePath).ToList();
+            List<ISftpFile> files = sftpClient.ListDirectory(sourceRemotePath).ToList();
 
             //foreach (SftpFile file in files.Where(file => file.Name is not ("." or "..")))
             Parallel.ForEach(files.Where(file => file.Name is not ("." or "..")), file =>
@@ -167,7 +185,7 @@ namespace Sftp
             //}
         }
 
-        public static string DestinationPathAddDate(string destFilePath, SftpFile file)
+        public static string DestinationPathAddDate(string destFilePath, ISftpFile file)
         {
             DateTime time = SeparateDateTime(file);
 
@@ -179,7 +197,7 @@ namespace Sftp
             return destFilePath;
         }
 
-        public static DateTime SeparateDateTime(SftpFile file)
+        public static DateTime SeparateDateTime(ISftpFile file)
         {
             string fileNme = file.Name;
             if (fileNme.StartsWith("manual", StringComparison.OrdinalIgnoreCase))
@@ -196,6 +214,20 @@ namespace Sftp
             }
 
             return time;
+        }
+
+        public void SendError(string subject, string message)
+        {
+            if (string.IsNullOrWhiteSpace(ApiKey)) return;
+
+            SendEmail email = new(ApiKey)
+            {
+                FromEmail = "BackupUser@sharkbytecomputers.com",
+                ToEmail = "sharkbytecomputer@gmail.com",
+                Subject = subject,
+                Message = message
+            };
+            email.SendMessage();
         }
     }
 }

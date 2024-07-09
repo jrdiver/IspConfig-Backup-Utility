@@ -2,17 +2,17 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UserSecretsId>b16bbd57-eb46-4dc6-9267-a791e797c4e7</UserSecretsId>
     <AssemblyName>Jrdiver's SFTP Backup Utility</AssemblyName>
     <Authors>Jrdiver</Authors>
     <Company>SharkByte Computers</Company>
-    <Copyright>2021 SharkByte Computers</Copyright>
+    <Copyright>2021-2024 SharkByte Computers</Copyright>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <PackageId>SharkByte.IspConfigBackup.GUI</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <PackageProjectUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,9 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Install", "Install", "{A030
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedMethods", "SharedMethods\SharedMethods.csproj", "{34510601-372C-4965-93F9-241DD121CEF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringEncrypter", "StringEncrypter\StringEncrypter.csproj", "{59E7CE1D-A537-4CD2-A779-A1B5BD1060FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringEncrypter", "StringEncrypter\StringEncrypter.csproj", "{59E7CE1D-A537-4CD2-A779-A1B5BD1060FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistryConnector", "RegistryConnector\RegistryConnector.csproj", "{367321DC-3B6C-4DE5-A77B-6E5432449360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistryConnector", "RegistryConnector\RegistryConnector.csproj", "{367321DC-3B6C-4DE5-A77B-6E5432449360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendgridConnector", "SendgridConnector\SendgridConnector.csproj", "{C63D9803-BB4F-4323-9373-A7CC5761A156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{367321DC-3B6C-4DE5-A77B-6E5432449360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{367321DC-3B6C-4DE5-A77B-6E5432449360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{367321DC-3B6C-4DE5-A77B-6E5432449360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C63D9803-BB4F-4323-9373-A7CC5761A156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C63D9803-BB4F-4323-9373-A7CC5761A156}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C63D9803-BB4F-4323-9373-A7CC5761A156}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C63D9803-BB4F-4323-9373-A7CC5761A156}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{34510601-372C-4965-93F9-241DD121CEF7} = {A7A85DAB-9D8C-4AFD-B595-D634DDD91EA8}
 		{59E7CE1D-A537-4CD2-A779-A1B5BD1060FB} = {A7A85DAB-9D8C-4AFD-B595-D634DDD91EA8}
 		{367321DC-3B6C-4DE5-A77B-6E5432449360} = {A7A85DAB-9D8C-4AFD-B595-D634DDD91EA8}
+		{C63D9803-BB4F-4323-9373-A7CC5761A156} = {A7A85DAB-9D8C-4AFD-B595-D634DDD91EA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59A919C0-2B61-4FC6-94E4-2693943944FA}
