@@ -1,7 +1,6 @@
 ﻿// using SendGrid's C# Library
 // https://github.com/sendgrid/sendgrid-csharp
 
-using System;
 using System.Threading.Tasks;
 using SendGrid;
 using SendGrid.Helpers.Mail;

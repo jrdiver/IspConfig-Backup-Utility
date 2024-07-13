@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace BackupFileManagement
+namespace BackupFileManagement;
+
+internal class FileCleanupInfo
 {
-    internal class FileCleanupInfo
-    {
-        public string FilePath = string.Empty;
-        public DateTime BackupTime = DateTime.MinValue;
-    }
+    public string FilePath = string.Empty;
+    public DateTime BackupTime = DateTime.MinValue;
 }

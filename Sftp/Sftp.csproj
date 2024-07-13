@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>SharkByte.IspConfigBackup.SftpClient</PackageId>
-    <Version>1.0.1</Version>
+	  <Version>1.1.0</Version>
     <Authors>Jrdiver</Authors>
     <Company>SharkByte Computers</Company>
-    <Copyright>2021 SharkByte Computers</Copyright>
+    <Copyright>2024 SharkByte Computers</Copyright>
     <PackageProjectUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -27,7 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DatabaseMySql\DatabaseMySql.csproj" />
     <ProjectReference Include="..\SendgridConnector\SendgridConnector.csproj" />
-    <ProjectReference Include="..\sftpObjects\sftpObjects.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,33 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ftp_BackupTool"
         mc:Ignorable="d"
-        Title="Jrdiver's IspConfig Backup Utility" Height="600" Width="600" MinWidth="599" MinHeight="400"
-        Loaded="Window_Loaded">
-    <Grid>
-        <ProgressBar x:Name="ProgressBar1" Margin="10,525,10,10" VerticalAlignment="Stretch"/>
-        <Button x:Name="CloseRun" Content="Close" HorizontalAlignment="Right" VerticalAlignment="Top" Height="47" Width="152" Margin="0,473,10,0" Click="CloseRun_Click"/>
-        <Button x:Name="ButtonRun" Content="Run" HorizontalAlignment="Right" VerticalAlignment="Top" Height="47" Width="152" Click="ButtonRun_Click" Margin="0,421,10,0"/>
-        <TextBox x:Name="TextHostName" HorizontalAlignment="Stretch" Margin="127,14,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <Label Content="HostName: " HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextSftpUserName" HorizontalAlignment="Stretch" Margin="127,45,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <PasswordBox x:Name="TextSftpPassword" Margin="127,76,175,0" VerticalAlignment="Top" Height="22"/>
-        <TextBox x:Name="TextSftpPort" Text="22" Margin="127,107,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <Label Content="SFTP UserName: " HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-        <Label Content="SFTP Password: " HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextMySqlUserName" Margin="127,138,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <Label Content="MySQL UserName: " HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
-        <Label Content="MySQL Password: " HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top"/>
-        <PasswordBox x:Name="TextMySqlPassword" Margin="127,169,175,0" VerticalAlignment="Top" Height="22"/>
-        <Label Content="Email API Key: " HorizontalAlignment="Left" Margin="10,225,0,0" VerticalAlignment="Top"/>
-        <Label Content="Remote Directory: " HorizontalAlignment="Left" Margin="10,258,0,0" VerticalAlignment="Top"/>
-        <Label Content="Local Directory: " HorizontalAlignment="Left" Margin="10,289,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextMySqlPort" Text="3306" Margin="127,200,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <TextBox x:Name="TextEmailApiKey" Text="" Margin="127,227,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <TextBox x:Name="TextRemoteDirectory" Text="/var/backup" Margin="127,262,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <TextBox x:Name="TextLocalDirectory" Text="C:\IspConfig Backups" Margin="127,293,175,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
-        <Button x:Name="ButtonSave" Content="Save Settings" HorizontalAlignment="Right" VerticalAlignment="Top" Height="47" Width="152" Margin="0,369,10,0" Click="ButtonSave_Click"/>
-        <Label Content="MySQL Port: " HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top"/>
-        <Label Content="SFTP Port: " HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="CheckBoxAutoRun" Content="Auto Run on Startup" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,15,0" Checked="CheckBoxAutoRun_Checked"/>
+        Title="Jrdiver's IspConfig Backup Utility" 
+        Height="455" 
+        Width="600"
+        MinWidth="600" 
+        MinHeight="455"
+        Loaded="Window_Loaded" Background="#FFBAE1FF">
+    <Grid Margin="5,0,5,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="175"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Column="0" Content="Selected Profile:" Margin="10,10,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="HostName:" Margin="10,41,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="SFTP UserName:" Margin="10,72,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="SFTP Password:" Margin="10,103,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="SFTP Port:" Margin="10,134,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="MySQL UserName:" Margin="10,165,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="MySQL Password:" Margin="10,196,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="MySQL Port:" Margin="10,227,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="Email API Key:" Margin="10,258,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="Remote Directory:" Margin="10,289,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="Local Directory:" Margin="10,320,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+
+        <ComboBox x:Name="DropSelectedHost" Grid.Column="1" Margin="5,14,5,0" VerticalAlignment="Top" Height="22" SelectionChanged="DropSelectedHost_SelectionChanged"/>
+        <TextBox x:Name="TextHostName" Margin="5,45,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextSftpUserName" Margin="5,76,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <PasswordBox x:Name="TextSftpPassword" Margin="5,107,5,0" VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextSftpPort" Text="22" Margin="5,138,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextMySqlUserName" Margin="5,169,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <PasswordBox x:Name="TextMySqlPassword" Margin="5,200,5,0" VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextMySqlPort" Text="3306" Margin="5,231,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <PasswordBox x:Name="TextEmailApiKey" Margin="5,262,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextRemoteDirectory" Text="/var/backup" Margin="5,293,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextLocalDirectory" Text="C:\IspConfig Backups" Margin="5,324,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+
+        <CheckBox x:Name="CheckBoxAutoRun" Content="Auto Run on Startup" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,15,0" Checked="CheckBoxAutoRun_Checked" Grid.Column="2"/>
+
+        <Button x:Name="ButtonDeleteSelected" Content="Remove Selected Profile" VerticalAlignment="Bottom" Height="47" Margin="5,0,10,290" Click="ButtonDeleteSelected_Click"  Grid.Column="2"/>
+        <Button x:Name="ButtonNew" Content="New Profile" VerticalAlignment="Bottom" Height="47" Margin="5,0,10,235" Click="ButtonNew_Click" Grid.Column="2"/>
+        <Button x:Name="ButtonSave" Content="Save Profile" VerticalAlignment="Bottom" Height="47" Margin="5,0,10,180" Click="ButtonSave_Click" Grid.Column="2"/>
+        <Button x:Name="ButtonRun" Content="Run" VerticalAlignment="Bottom" Height="47" Click="ButtonRun_Click" Margin="5,0,10,125" Grid.Column="2"/>
+        <Button x:Name="CloseRun" Content="Close" VerticalAlignment="Bottom" Height="47" Margin="5,0,10,70" Click="CloseRun_Click" Grid.Column="2"/>
+        <ProgressBar x:Name="ProgressBar1" Margin="10,0,10,10" Grid.ColumnSpan="3" Grid.Column="0" VerticalAlignment="Bottom" Height="50" />
     </Grid>
 </Window>

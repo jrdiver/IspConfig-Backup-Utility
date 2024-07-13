@@ -12,7 +12,7 @@
     <Copyright>2021-2024 SharkByte Computers</Copyright>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <PackageId>SharkByte.IspConfigBackup.GUI</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <PackageProjectUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BackupFileManagement\BackupFileManagement.csproj" />
-    <ProjectReference Include="..\RegistryConnector\RegistryConnector.csproj" />
     <ProjectReference Include="..\Sftp\Sftp.csproj" />
   </ItemGroup>
 

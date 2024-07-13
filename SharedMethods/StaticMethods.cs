@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Globalization;
 
-namespace SharedMethods
-{
-    public static class StaticMethods
-    {
-        public static DateTime Epoch2SDate(long epoch) => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(epoch);
+namespace Shared;
 
-        public static int GetWeekNumber(DateTime date)
-        {
-            Calendar cal = new CultureInfo("en-US").Calendar;
-            return cal.GetWeekOfYear(date, CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday);
-        }
+public static class StaticMethods
+{
+    public static DateTime Epoch2SDate(long epoch) => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(epoch);
+
+    public static int GetWeekNumber(DateTime date)
+    {
+        Calendar cal = new CultureInfo("en-US").Calendar;
+        return cal.GetWeekOfYear(date, CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday);
     }
 }

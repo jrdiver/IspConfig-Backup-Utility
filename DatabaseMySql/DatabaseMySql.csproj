@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>SharkByte.IspConfigBackup.Database</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Authors>Jrdiver</Authors>
     <Company>SharkByte Computers</Company>
-    <Copyright>2021 SharkByte Computers</Copyright>
+    <Copyright>2024 SharkByte Computers</Copyright>
     <PackageProjectUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\sftpObjects\sftpObjects.csproj" />
+    <ProjectReference Include="..\SharedMethods\Shared.csproj" />
   </ItemGroup>
 
 </Project>
