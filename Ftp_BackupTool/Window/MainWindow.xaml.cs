@@ -8,6 +8,7 @@ using BackupFileManagement;
 using Shared;
 using Shared.Objects;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace Ftp_BackupTool.Window;
 
@@ -17,6 +18,9 @@ public partial class MainWindow
     private const string KeyLocation = "JrdiverSftpBackup";
     private bool autoRun;
     private List<BackupDefinition> backupDefinitions = [];
+    private List<string> loginModes = ["OpenSSH Key", "Password"];
+
+
     public MainWindow()
     {
         InitializeComponent();
@@ -26,6 +30,8 @@ public partial class MainWindow
             DropSelectedHost.ItemsSource = backupDefinitions.Select(x => x.Host + ":" + x.FtpPort);
             DropSelectedHost.SelectedIndex = 0;
         }
+
+        DropLoginMode.ItemsSource = loginModes;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -75,7 +81,8 @@ public partial class MainWindow
         }
 
         BackupDefinition definition = GetBackupDefinition();
-        backupDefinitions = backupDefinitions.Where(x => !(x.Host == definition.Host && x.FtpPort == definition.FtpPort)).ToList();
+        backupDefinitions = backupDefinitions
+            .Where(x => !(x.Host == definition.Host && x.FtpPort == definition.FtpPort)).ToList();
         backupDefinitions.Add(definition);
         string json = JsonSerializer.Serialize(backupDefinitions);
 
@@ -137,6 +144,7 @@ public partial class MainWindow
                 backupDefinitions.Add(backupInfo);
             settings.AddUnencryptedUserValue("Definitions", JsonSerializer.Serialize(backupDefinitions));
         }
+
         TextEmailApiKey.Password = settings.GetUserValue("EmailApiKey");
         bool.TryParse(settings.GetUserValue("AutoRun"), out bool autoRuns);
         CheckBoxAutoRun.IsChecked = autoRuns;
@@ -159,46 +167,55 @@ public partial class MainWindow
             TextHostName.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextSftpUserName.Text))
         {
             TextSftpUserName.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextSftpPassword.Password))
         {
             TextSftpPassword.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextSftpPort.Text) || !int.TryParse(TextSftpPort.Text, out int _))
         {
             TextSftpPort.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextMySqlUserName.Text))
         {
             TextMySqlUserName.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextMySqlPassword.Password))
         {
             TextMySqlPassword.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextMySqlPort.Text) || !int.TryParse(TextMySqlPort.Text, out int _))
         {
             TextMySqlPort.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextEmailApiKey.Password))
         {
             TextEmailApiKey.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextRemoteDirectory.Text))
         {
             TextRemoteDirectory.Background = Brushes.LightCoral;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(TextLocalDirectory.Text))
         {
             TextLocalDirectory.Background = Brushes.LightCoral;
@@ -208,7 +225,8 @@ public partial class MainWindow
         return true;
     }
 
-    private void CheckBoxAutoRun_Checked(object sender, RoutedEventArgs e) => autoRun = CheckBoxAutoRun.IsChecked == true;
+    private void CheckBoxAutoRun_Checked(object sender, RoutedEventArgs e) =>
+        autoRun = CheckBoxAutoRun.IsChecked == true;
 
     private void DropSelectedHost_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
@@ -224,6 +242,7 @@ public partial class MainWindow
         TextMySqlPort.Text = backupInfo.SqlPort.ToString();
         TextRemoteDirectory.Text = backupInfo.ServerFolder;
         TextLocalDirectory.Text = backupInfo.LocalFolder;
+        DropLoginMode.SelectedValue = backupInfo.LoginMode;
     }
 
     private void ButtonDeleteSelected_Click(object sender, RoutedEventArgs e)
@@ -234,7 +253,7 @@ public partial class MainWindow
             DropSelectedHost.SelectedIndex = 0;
         else
             ButtonNew_Click(null, null);
-        
+
         string json = JsonSerializer.Serialize(backupDefinitions);
         RegistryUser settings = new() { KeyLocation = KeyLocation };
         settings.AddUnencryptedUserValue("Definitions", json);
@@ -251,5 +270,23 @@ public partial class MainWindow
         TextMySqlPort.Text = "3306";
         TextRemoteDirectory.Text = "/var/backup";
         TextLocalDirectory.Text = @"C:\IspConfig Backups";
+    }
+
+    private void DropLoginMode_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DropLoginMode.SelectedIndex == 0)
+        {
+            TextSftpPassword.Visibility = Visibility.Hidden;
+            TextSftpPassword.Password = TextSftpKey.Text;
+            TextSftpPassword.IsEnabled = false;
+            TextSftpKey.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            TextSftpKey.Visibility = Visibility.Hidden;
+            TextSftpPassword.Visibility = Visibility.Visible;
+            TextSftpPassword.IsEnabled = true;
+            TextSftpKey.Text = TextSftpPassword.Password;
+        }
     }
 }

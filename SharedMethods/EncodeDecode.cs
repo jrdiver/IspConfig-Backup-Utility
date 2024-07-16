@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using Integrative.Encryption;
 using Shared.Objects;
@@ -22,8 +23,17 @@ public static class EncodeDecode
     /// <summary> Takes the Encrypted object and returns a string </summary>
     public static string Decrypt(EncryptedString input)
     {
-        if (input.Encrypted != null && input.Entropy != null && input.Encrypted.Length > 0 && input.Entropy.Length > 0)
-            return Encoding.ASCII.GetString(CrossProtect.Unprotect(input.Encrypted, input.Entropy, input.Scope));
+        try
+        {
+            if (input.Encrypted != null && input.Entropy != null && input.Encrypted.Length > 0 &&
+                input.Entropy.Length > 0)
+                return Encoding.ASCII.GetString(CrossProtect.Unprotect(input.Encrypted, input.Entropy, input.Scope));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
         return string.Empty;
     }
 

@@ -9,7 +9,7 @@
         Height="455" 
         Width="600"
         MinWidth="600" 
-        MinHeight="455"
+        MinHeight="485"
         Loaded="Window_Loaded" Background="#FFBAE1FF">
     <Grid Margin="5,0,5,0">
         <Grid.ColumnDefinitions>
@@ -29,10 +29,12 @@
         <Label Grid.Column="0" Content="Email API Key:" Margin="10,258,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Label Grid.Column="0" Content="Remote Directory:" Margin="10,289,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Label Grid.Column="0" Content="Local Directory:" Margin="10,320,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Content="SFTPLogin Mode" Margin="10,351,5,0" VerticalAlignment="Top" HorizontalAlignment="Right"/>
 
         <ComboBox x:Name="DropSelectedHost" Grid.Column="1" Margin="5,14,5,0" VerticalAlignment="Top" Height="22" SelectionChanged="DropSelectedHost_SelectionChanged"/>
         <TextBox x:Name="TextHostName" Margin="5,45,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <TextBox x:Name="TextSftpUserName" Margin="5,76,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="TextSftpKey" Margin="5,107,5,0" Visibility="Hidden" VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <PasswordBox x:Name="TextSftpPassword" Margin="5,107,5,0" VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <TextBox x:Name="TextSftpPort" Text="22" Margin="5,138,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <TextBox x:Name="TextMySqlUserName" Margin="5,169,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
@@ -41,6 +43,7 @@
         <PasswordBox x:Name="TextEmailApiKey" Margin="5,262,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <TextBox x:Name="TextRemoteDirectory" Text="/var/backup" Margin="5,293,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
         <TextBox x:Name="TextLocalDirectory" Text="C:\IspConfig Backups" Margin="5,324,5,0"  VerticalAlignment="Top" Height="22" Grid.Column="1"/>
+        <ComboBox x:Name="DropLoginMode" Grid.Column="1" Margin="5,355,5,0" VerticalAlignment="Top" Height="22" SelectionChanged="DropLoginMode_OnSelectionChanged"/>
 
         <CheckBox x:Name="CheckBoxAutoRun" Content="Auto Run on Startup" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,15,0" Checked="CheckBoxAutoRun_Checked" Grid.Column="2"/>
 

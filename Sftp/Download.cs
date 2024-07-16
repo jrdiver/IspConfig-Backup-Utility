@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DatabaseMySql;
 using Renci.SshNet;
@@ -15,7 +16,7 @@ namespace Sftp;
 public class Download
 {
     BackupDefinition backupInfo;
-    public string ApiKey;
+    public string ApiKey = string.Empty;
     public string FromEmail = string.Empty;
     public string FromName = string.Empty;
     public string ToEmail = string.Empty;
@@ -53,7 +54,12 @@ public class Download
 
         try
         {
-            using SftpClient sftp = new(backupInfo.Host, backupInfo.FtpPort, backupInfo.FtpUsername, backupInfo.FtpPassword);
+
+            FileStream keyStream = new FileStream(@"\\10.10.10.11\Server Backups\drvmserver_private.pk", FileMode.Open);
+            using SftpClient sftp = new(backupInfo.Host, backupInfo.FtpPort, backupInfo.FtpUsername, new PrivateKeyFile(keyStream, ""));
+
+
+            //using SftpClient sftp = new(backupInfo.Host, backupInfo.FtpPort, backupInfo.FtpUsername, backupInfo.FtpPassword);
             sftp.Connect();
 
             DownloadDirectory(sftp, backupInfo.ServerFolder, backupInfo.LocalFolder);

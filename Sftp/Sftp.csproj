@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/jrdiver/IspConfig-Backup-Utility</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -26,6 +26,8 @@ public class BackupDefinition
 
     public string SqlUsername { get; set; } = string.Empty;
 
+    public string LoginMode { get; set; } = "Password";
+
     public string SqlPassword = string.Empty;
 
     public EncryptedString SqlPasswordEncoded
